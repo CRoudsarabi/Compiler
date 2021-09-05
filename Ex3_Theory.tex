@@ -1,0 +1,100 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpartir}
+
+\begin{document}
+\section*{Ex3 Theory}
+\subsection*{2.4}
+\begin{mathpar}
+\inferrule*[Right=($for$)] 
+{	\Gamma\vdash_{e} $ e0 : int$\\
+	\Gamma $, (l, i : int) $ \vdash_{e} $ e1 : bool$\\
+	\Gamma $, (l, i : int) $ \vdash_{s} $ s1$\\
+	\Gamma $, (l, i : int) $ \vdash_{s} $ s2$} 
+{\Gamma\vdash $ for (int i=e0; e1; s1) s2$}
+\end{mathpar}
+\subsection*{2.5}
+Derivation (We use $\Gamma$ for (return : int[]), (l, y: int[])) :
+\begin{mathpar}
+\inferrule*[Right=($var-decl$)] 
+{	\inferrule*[Right=($seq$)] {
+		\inferrule*[Right=($assign$)] {
+		D2 \\
+		int[] \prec int[]
+		}
+		{
+		\Gamma \vdash_{s} $ y = new int[2];$
+		}\\ \\
+		\inferrule*[Right=($seq$)] {
+			D3
+		}
+		{
+		\Gamma \vdash_{sl} $ y[1] = 1; return y;$
+		}
+	}
+	{$(return : int[]), (l, y: int[]) $ \vdash_{sl} $ y = new int[2]; y[1] = 1; return 	y;$
+	}
+} 
+{	
+	$(return : int[]) $ \vdash_{sl} $ int[] y; y = new int[2]; y[1] = 1; return y;$
+}
+
+\end{mathpar}
+\\\\D2:
+\begin{mathpar}
+\inferrule*[Right=($var-use$)] {
+		$(\_, y : int) $ \epsilon$ $\Gamma
+		}
+		{
+		\Gamma \vdash_{e} $y : int[]$
+		}\\ \\
+\inferrule*[Right=($new-array$)] {
+		\inferrule*[Right=($int-literal$)] { }
+		{
+			\Gamma\vdash_{e} $ 2 : int$
+		}
+}
+{
+	\Gamma \vdash_{e} $ new int[2] : int[]$
+}	
+\end{mathpar}
+\\\\D3:
+\begin{mathpar}
+\inferrule*[Right=($assign$)] {
+	\inferrule*[Right=($array-lookup$)] 
+	{ 	
+		\inferrule*[Right=($var-use$)] {$(\_, y : int[]) $\epsilon$ $\Gamma }
+		{
+		\Gamma \vdash_{e} $ y : int[]$
+		}\\ \\ \\
+		\inferrule*[Right=($int-literal$)] { }
+		{
+		\Gamma \vdash_{e} $ 1 : int$
+		}
+	}
+	{
+		\Gamma \vdash_{e} $ y[1] : int$
+	}\\ \\ \\ \\
+	\inferrule*[Right=($int-literal$)] { }
+	{
+		\Gamma \vdash_{e} $ 1 : int$
+	}
+}
+{
+	\Gamma \vdash_{s} $ y[1] = 1;$
+}\\\\
+\inferrule*[Right=($return$)] {
+	\inferrule*[Right=($var-use$)] {
+			$(\_, y : int[]) $\epsilon$ $\Gamma
+		}
+		{
+			\Gamma \vdash_{s} $ y : int[]$
+		}\\ \\ \\
+	$ int[] $ \epsilon $ int[]$\\
+	$ (return : int[]) $\epsilon$ $ \Gamma
+}
+{
+	\Gamma \vdash_{s} $ return y;$
+}				
+\end{mathpar}
+\end{document}
